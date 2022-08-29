@@ -1,7 +1,32 @@
 import styles from "../styles/home.module.css";
 import PropTypes from 'prop-types'; 
+import { useEffect , useState  } from "react";
+import { getPosts } from "../api";
+import { Loader } from "../components";
 
-const Home = ({ posts }) => {
+const Home = () => {
+
+  const [posts , setPosts] =useState([]);
+  const [spinner , setSpinner]=useState(true);
+
+   useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await getPosts();
+      if(response.success){
+      setPosts(response.data.posts);
+      console.log('response', response.data.posts);
+      setSpinner(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+  if(spinner){
+    return (
+      <Loader/>
+    )
+  }
+
   return (
     <div className={styles.postsList}>
       {posts.map((post) => {
