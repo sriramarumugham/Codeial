@@ -16,24 +16,22 @@ const Navbar = () => {
 
       <div className={styles.rightNav}>
         <div className={styles.user}>
-          <Link to="/">
+          <Link to="/settings">
             <img
               src="https://image.flaticon.com/icons/svg/2154/2154651.svg"
               alt=""
               className={styles.userDp}
             />
+            {auth.user && <span >{auth.user.name} </span>}
           </Link>
-          {auth.user && <span>{auth.user.name}</span>}
+          
         </div>
 
         <div className={styles.navLinks}>
           <ul>
             {auth.user ? (
               <>
-                < li>
-                  <Link to="/login">Log out</Link>
-                </li>
-              
+                <li onClick={auth.logout}>Log out</li>
               </>
             ) : (
               <>

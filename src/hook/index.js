@@ -1,12 +1,8 @@
 import React, { useState , useEffect } from "react";
-import { login as userLogin , register  , editProfile} from "../api";
+import { login as userLogin , register  , editProfile , fetchUserFriends} from "../api";
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
-import {setItemInLocalStorage , 
-  getItemFromLocalStorage , 
-  removeItemFromLocalStorage ,
-   getFormBody 
-  } from '../utils/index';
+import {setItemInLocalStorage ,  getItemFromLocalStorage , removeItemFromLocalStorage , getFormBody   } from '../utils/index';
   import {LOCALSTORAGE_TOKEN_KEY} from '../utils/constants';
   import jwt_decode from "jwt-decode";
 
@@ -19,15 +15,25 @@ export const useProvideAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const getUser = async () => {
     const userToken = getItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
-
+      setLoading(true)
     if (userToken) {
       const user =  jwt_decode(userToken);
+      const response = await fetchUserFriends();
 
-      setUser(user);
+      let friends = [];
+      if (response.success) {
+        friends = response.data.friends;
+      }
+      setUser({
+        ...user,
+        friends,
+      });
     }
-
     setLoading(false);
+  }
+  getUser();
   }, []);  
  
 
@@ -50,7 +56,8 @@ export const useProvideAuth = () => {
   }
   const logout=()=>{
     removeItemFromLocalStorage(LOCALSTORAGE_TOKEN_KEY);
-      setUser(null);
+    
+    setUser(null);
   }
 
   const signup = async (name, email, password, confirmPassword) => {
@@ -86,6 +93,24 @@ export const useProvideAuth = () => {
       };
     }
   }
+  const updateUserFriends = (addFriend, friend) => {
+    if (addFriend) {
+      setUser({
+        ...user,
+        friends: [...user.friends, friend],
+      });
+      return;
+    }
+
+    const newFriends = user.friends.filter(
+      (f) => f.to_user._id !== friend.to_user._id
+    );
+
+    setUser({
+      ...user,
+      friends: newFriends,
+    });
+  };
 
 
   return {
@@ -94,7 +119,8 @@ export const useProvideAuth = () => {
       logout,
       loading,
       signup,
-      updateUser
+      updateUser,
+      updateUserFriends
 
   };
   

@@ -31,16 +31,19 @@ const navigate=useNavigate();
     }
 
     const response = await auth.login(email, password);
-
+       console.log(response.message)
     if (response.success) {
-       toast.success("success");
-       {navigate('/' , {replase:true})}
+
+       toast("Wow so easy!");
+       
+      {navigate('/' , {replase:true})}
       
     } else {
+
      toast.error(  response.message);
     
     }
-
+     
     setLoggingIn(false);
     
    

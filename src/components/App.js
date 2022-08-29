@@ -2,10 +2,16 @@ import "../styles/App.css";
 import { getPosts } from "../api/index";
 
 import { useEffect, useState } from "react";
-import { Home, Login, Register, Settings } from "../pages/index";
+import { Home, Login, Register, Settings, UserProfile } from "../pages/index";
 import { Loader, Navbar } from "./index";
 import "../styles/index.css";
-import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 
@@ -16,7 +22,9 @@ import { useAuth } from "../hook/index";
 function App() {
   const auth = useAuth();
 
-  useEffect(() => {});
+  useEffect(() => {
+    console.log(auth.user, "from app");
+  });
 
   if (auth.loading) {
     return <Loader />;
@@ -56,9 +64,9 @@ function App() {
   //     />
   //   );
   // }
-  function ProtectedRoute({ children}) {
+  function ProtectedRoute({ children }) {
     const auth = useAuth();
-    return(auth.user ? children : <Navigate to="/login"  replace/>)
+    return auth.user ? children : <Navigate to="/login" replace />;
   }
   return (
     <div className="App">
@@ -69,19 +77,17 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/login/:id" element={<Login />} /> {/* useparams */}
-        <Route path="/test/:id" element={<Test />} />
-        <Route path='*' element={<div>404</div>}/>;
-        {/* <ProtectedRoute path="/settings">
-          <Settings/>
-        </ProtectedRoute> */}
-        {/* <Route path="/settings" element={<Settings />} /> */}
-        <Route path="/settings" element={
-          <ProtectedRoute>
-        <Settings />
-        </ProtectedRoute>
-        } />
-
+        <Route path="/login/:id" element={<Login />} /> 
+        <Route path="/user/:userId" element={<UserProfile/>} />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<div>404</div>} />;
       </Routes>
     </div>
   );

@@ -2,7 +2,8 @@ import styles from "../styles/home.module.css";
 import PropTypes from 'prop-types'; 
 import { useEffect , useState  } from "react";
 import { getPosts } from "../api";
-import { Loader } from "../components";
+import { Loader  } from "../components";
+import { Link } from "react-router-dom";
 
 const Home = () => {
 
@@ -10,6 +11,7 @@ const Home = () => {
   const [spinner , setSpinner]=useState(true);
 
    useEffect(() => {
+   
     const fetchPosts = async () => {
       const response = await getPosts();
       if(response.success){
@@ -39,7 +41,19 @@ const Home = () => {
                   alt="user-pic"
                 />
                 <div>
-                  <span className={styles.postAuthor}>{post.user.name}</span>
+                  <div>
+                <Link
+                  to={{
+                    pathname: `/user/${post.user._id}`,
+                    state: {
+                      user: post.user,
+                    },
+                  }}
+                  className={styles.postAuthor}
+                >
+                  {post.user.name}
+                </Link>
+                </div>
                   <span className={styles.postTime}>a minute ago</span>
                 </div>
               </div>

@@ -1,8 +1,8 @@
 import { useAuth } from "../hook";
 import { useState } from "react";
 import styles from "../styles/settings.module.css";
-import {  toast , ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
@@ -13,28 +13,28 @@ const Settings = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingForm, setSavingForm] = useState(false);
 
-  const navigate=useNavigate();
-  
+  const navigate = useNavigate();
+
   const clearForm = () => {
-    setPassword('');
-    setConfirmPassword('');
+    setPassword("");
+    setConfirmPassword("");
   };
 
-
   const updateProfile = async () => {
-    
     setSavingForm(true);
-    let error=false;
-    if(confirmPassword!=password){
-      error=true;
-      toast.error("password dosent match")
-    }
-    else if(!name || !password || ! confirmPassword){
-      error=true;
-      toast.error("fill up the field before updating the information")
+    let error = false;
+    if (confirmPassword != password) {
+      error = true;
+      toast.error("password dosent match");
+    } else if (!name || !password || !confirmPassword) {
+      error = true;
+      toast.error("fill up the field before updating the information");
     }
 
-    if(error)   { clearForm() ;return      setSavingForm(false); }
+    if (error) {
+      clearForm();
+      return setSavingForm(false);
+    }
     if (auth.user) {
       const response = auth.updateUser(
         name,
@@ -43,12 +43,18 @@ const Settings = () => {
         confirmPassword
       );
       if (response.success) {
-        toast.success("success");
+        toast.error("fill up the field before updating the information");
+        console.log("respnse success on yodate");
       } else {
         toast.error(response.message);
+    
       }
     }
-    { clearForm();   {navigate('/' , {replace:true})};   setEditMode(false); return      setSavingForm(false); }
+    clearForm();
+    setEditMode(false);
+    setSavingForm(false);
+    // {navigate('/' , {replace:true})}
+    return;
   };
 
   return (
@@ -125,6 +131,7 @@ const Settings = () => {
           </button>
         )}
       </div>
+      <ToastContainer/>
     </div>
   );
 };
